@@ -66,6 +66,8 @@ func downloadLatestVersion(dest string) error {
 func main() {
 	// Init destination flag
 	dest := flag.String("dest", "/usr/bin/nvim", "executable directory destination")
+	check := flag.Bool("check", false, "check only if a new version is available")
+
 	flag.Parse()
 
 	// Latest version from GitHub
@@ -83,11 +85,14 @@ func main() {
 		log.Fatalf("Error when getting nvim current version: %v", err)
 	}
 	current := getVersion(content)
-	log.Printf("Current neovim version is %s", latest)
+	log.Printf("Current neovim version is %s", current)
 
 	// Exit if already on latest version
 	if latest == current {
 		log.Printf("Already at the latest version: latest=%s current=%s", latest, current)
+		os.Exit(0)
+	} else if *check {
+		log.Printf("A new version is available: latest=%s current=%s", latest, current)
 		os.Exit(0)
 	}
 
